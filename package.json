@@ -1,5 +1,5 @@
 {
-  "name": "db-driver-mongodb",
+  "name": "@sapling/db-driver-mongodb",
   "version": "0.1.0",
   "license": "MPL-2.0",
   "description": "MongoDB driver for Sapling",
