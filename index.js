@@ -108,8 +108,9 @@ module.exports = class Mongo extends Interface {
 			for (const key in fields) {
 				const rule = fields[key];
 
-				/* Create indices for any fields marked unique */
-				if (rule.unique) {
+				/* Create indices for any fields marked unique or identifiable */
+				/* TODO: move this to Sapling proper, so we don't rely on drivers to implement model rule logic */
+				if (rule.unique || rule.identifiable) {
 					const ufields = {};
 					ufields[key] = 1;
 					self.createIndex(name, ufields, {unique: true});
