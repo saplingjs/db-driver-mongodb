@@ -103,20 +103,7 @@ module.exports = class Mongo extends Interface {
 
 		const self = this;
 
-		const collection = await this.database.createCollection(name, mongo_options.open, () => {
-			/* Go through all the fields in the model */
-			for (const key in fields) {
-				const rule = fields[key];
-
-				/* Create indices for any fields marked unique or identifiable */
-				/* TODO: move this to Sapling proper, so we don't rely on drivers to implement model rule logic */
-				if (rule.unique || rule.identifiable) {
-					const ufields = {};
-					ufields[key] = 1;
-					self.createIndex(name, ufields, {unique: true});
-				}
-			}
-		});
+		const collection = await this.database.createCollection(name, mongo_options.open);
 
 		await this.close();
 
@@ -162,23 +149,6 @@ module.exports = class Mongo extends Interface {
 
 		/* If there is an _id field in constraints, create a proper object ID object */
 		conditions = this.convertObjectId(conditions);
-
-		/* TODO: find out what this is */
-		if (options['in']) {
-			const inOpts = options['in'];
-			const key = Object.keys(inOpts)[0];
-
-			if (key == '_id') { // TODO: include keys with rule.type == id
-				for (let i = 0; i < inOpts[key].length; ++i) {
-					try {
-						inOpts[key][i] = mongo.ObjectID(inOpts[key][i])
-					} catch (e) {}
-				}
-			}
-
-			conditions[key] = {'$in': inOpts[key]};
-			options = {};
-		}
 
 		/* Get the collection */
 		const collection = await this.database.collection(name, mongo_options.collection);
