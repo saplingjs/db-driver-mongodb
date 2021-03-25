@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Install Sapling
+        run: npx npm-install-peers
+
       - name: Run linter
         run: npm run lint
 
