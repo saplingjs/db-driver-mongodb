@@ -13,7 +13,7 @@ const HOST = 'localhost';
 const PORT = 27017;
 
 /* Default options for each type of operation */
-const mongo_options = {
+const mongoOptions = {
 	open: { w: 1, strict: false, safe: true },
 	collection: { strict: false },
 	insert: { w: 1, strict: false },
@@ -99,9 +99,7 @@ module.exports = class Mongo extends Interface {
 		console.log('CREATE COLLECTION', name, fields);
 		await this.open();
 
-		const self = this;
-
-		const collection = await this.database.createCollection(name, mongo_options.open);
+		const collection = await this.database.createCollection(name, mongoOptions.open);
 
 		await this.close();
 
@@ -120,12 +118,12 @@ module.exports = class Mongo extends Interface {
 		await this.open();
 
 		/* Select the given collection */
-		const collection = await this.database.collection(name, mongo_options.collection);
+		const collection = await this.database.collection(name, mongoOptions.collection);
 
 		const indices = [];
 
 		/* Create an index for the given field(s) */
-		for (field of fields) {
+		for (const field of fields) {
 			if (fields[field] === 'unique') {
 				indices.push(collection.createIndex({ [field]: 1 }, { unique: true }));
 			} else {
@@ -154,7 +152,7 @@ module.exports = class Mongo extends Interface {
 		conditions = this.convertObjectId(conditions);
 
 		/* Get the collection */
-		const collection = await this.database.collection(name, mongo_options.collection);
+		const collection = await this.database.collection(name, mongoOptions.collection);
 
 		/* Plain aggregation stack */
 		const stack = [
@@ -165,9 +163,11 @@ module.exports = class Mongo extends Interface {
 
 		/* Handle reference fields if we have any */
 		for (const reference in references) {
-			stack.push({
-				$lookup: references[reference]
-			});
+			if (Object.prototype.hasOwnProperty.call(references, reference)) {
+				stack.push({
+					$lookup: references[reference]
+				});
+			}
 		}
 
 		/* Do it */
@@ -191,9 +191,11 @@ module.exports = class Mongo extends Interface {
 
 		/* For any reference constraints, create a proper object ID object */
 		for (const i in conditions.references) {
-			const reference = conditions.references[i];
-			if (data[reference]) {
-				data[reference] = new mongo.ObjectID(data[reference]);
+			if (Object.prototype.hasOwnProperty.call(conditions.references, i)) {
+				const reference = conditions.references[i];
+				if (data[reference]) {
+					data[reference] = new ObjectID(data[reference]);
+				}
 			}
 		}
 
@@ -201,10 +203,10 @@ module.exports = class Mongo extends Interface {
 		delete conditions.references;
 
 		/* Select the given collection */
-		const collection = await this.database.collection(name, mongo_options.collection);
+		const collection = await this.database.collection(name, mongoOptions.collection);
 
 		/* Create a new record with the data */
-		const result = await collection.insert(data, mongo_options.insert);
+		const result = await collection.insert(data, mongoOptions.insert);
 
 		await this.close();
 
@@ -228,9 +230,11 @@ module.exports = class Mongo extends Interface {
 
 		/* For any reference constraints, create a proper object ID object */
 		for (const i in conditions.references) {
-			const reference = conditions.references[i];
-			if (data[reference]) {
-				data[reference] = new mongo.ObjectID(data[reference]);
+			if (Object.prototype.hasOwnProperty.call(conditions.references, i)) {
+				const reference = conditions.references[i];
+				if (data[reference]) {
+					data[reference] = new ObjectID(data[reference]);
+				}
 			}
 		}
 
@@ -238,10 +242,10 @@ module.exports = class Mongo extends Interface {
 		delete conditions.references;
 
 		/* Select the given collection */
-		const collection = await this.database.collection(name, mongo_options.collection);
+		const collection = await this.database.collection(name, mongoOptions.collection);
 
 		/* Update the given record with new data */
-		const result = await collection.update(conditions, { $set: data }, mongo_options.update);
+		const result = await collection.update(conditions, { $set: data }, mongoOptions.update);
 
 		await this.close();
 
@@ -263,10 +267,10 @@ module.exports = class Mongo extends Interface {
 		conditions = this.convertObjectId(conditions);
 
 		/* Select the given collection */
-		const collection = await this.database.collection(name, mongo_options.collection);
+		const collection = await this.database.collection(name, mongoOptions.collection);
 
 		/* Delete the given records */
-		const result = await collection.remove(conditions, mongo_options.remove);
+		const result = await collection.remove(conditions, mongoOptions.remove);
 
 		await this.close();
 
