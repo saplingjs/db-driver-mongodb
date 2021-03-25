@@ -279,13 +279,13 @@ module.exports = class Mongo extends Interface {
 			if (Object.prototype.hasOwnProperty.call(conditions, condition)) {
 				if (Array.isArray(conditions[condition])) {
 					stack[0].$match[condition] = { $in: conditions[condition].map(cond => {
-						if(String(conditions[condition]).includes('*')) {
+						if (String(conditions[condition]).includes('*')) {
 							return new RegExp(`^${cond.split('*').join('(.*)')}$`, 'gmi');
-						} else {
-							return cond;
 						}
+
+						return cond;
 					}) };
-				} else if(String(conditions[condition]).includes('*')) {
+				} else if (String(conditions[condition]).includes('*')) {
 					stack[0].$match[condition] = { $regex: new RegExp(`^${conditions[condition].split('*').join('(.*)')}$`, 'gmi') };
 				} else {
 					stack[0].$match[condition] = conditions[condition];
