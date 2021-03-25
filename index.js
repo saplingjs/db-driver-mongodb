@@ -14,10 +14,10 @@ const PORT = 27017;
 
 /* Default options for each type of operation */
 const mongoOptions = {
-	open: { w: 1, strict: false, safe: true },
+	open: { strict: false },
 	collection: { strict: false },
-	insert: { w: 1, strict: false },
-	update: { upsert: false, multi: true, w: 1, strict: false },
+	insert: { strict: false },
+	update: { upsert: false, multi: true, strict: false },
 	find: {}
 };
 
@@ -62,7 +62,10 @@ module.exports = class Mongo extends Interface {
 	 */
 	async connect({ name, host, port }) {
 		/* Setup the Mongo connection */
-		this.client = new MongoClient(`mongodb://${host || HOST}:${port || PORT}?useUnifiedTopology=true`);
+		this.client = new MongoClient(`mongodb://${host || HOST}:${port || PORT}`, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true
+		});
 
 		/* Set the given database (actually select it in open()) */
 		this.databaseName = name;
@@ -123,11 +126,11 @@ module.exports = class Mongo extends Interface {
 		const indices = [];
 
 		/* Create an index for the given field(s) */
-		for (const field of fields) {
+		for (const field of Object.keys(fields)) {
 			if (fields[field] === 'unique') {
-				indices.push(collection.createIndex({ [field]: 1 }, { unique: true }));
+				indices.push(await collection.createIndex({ [field]: 1 }, { unique: true }));
 			} else {
-				indices.push(collection.createIndex({ [field]: 1 }));
+				indices.push(await collection.createIndex({ [field]: 1 }));
 			}
 		}
 
@@ -154,24 +157,11 @@ module.exports = class Mongo extends Interface {
 		/* Get the collection */
 		const collection = await this.database.collection(name, mongoOptions.collection);
 
-		/* Plain aggregation stack */
-		const stack = [
-			{
-				$match: conditions
-			}
-		];
-
-		/* Handle reference fields if we have any */
-		for (const reference in references) {
-			if (Object.prototype.hasOwnProperty.call(references, reference)) {
-				stack.push({
-					$lookup: references[reference]
-				});
-			}
-		}
+		/* Aggregation stack */
+		const stack = this.createStack(conditions, references);
 
 		/* Do it */
-		const result = await collection.aggregate(stack, options);
+		const result = await collection.aggregate(stack, options).toArray();
 
 		await this.close();
 
@@ -185,28 +175,20 @@ module.exports = class Mongo extends Interface {
 	 * @param {string} name Name of the target collection
 	 * @param {object} data Data for the collection
 	 */
-	async write(name, conditions, data) {
-		console.log('WRITE', name, conditions, data);
+	async write(name, data) {
+		console.log('WRITE', name, data);
 		await this.open();
-
-		/* For any reference constraints, create a proper object ID object */
-		for (const i in conditions.references) {
-			if (Object.prototype.hasOwnProperty.call(conditions.references, i)) {
-				const reference = conditions.references[i];
-				if (data[reference]) {
-					data[reference] = new ObjectID(data[reference]);
-				}
-			}
-		}
-
-		/* Remove the raw references */
-		delete conditions.references;
 
 		/* Select the given collection */
 		const collection = await this.database.collection(name, mongoOptions.collection);
 
+		/* Coerce into an array */
+		if (Array.isArray(data) === false) {
+			data = [data];
+		}
+
 		/* Create a new record with the data */
-		const result = await collection.insert(data, mongoOptions.insert);
+		const result = await collection.insertMany(data, mongoOptions.insert);
 
 		await this.close();
 
@@ -275,5 +257,51 @@ module.exports = class Mongo extends Interface {
 		await this.close();
 
 		return result;
+	}
+
+
+	/**
+	 * Parse Sapling conditions into a MongoDB filter stack
+	 *
+	 * @param {object} conditions Conditions from Storage
+	 * @param {objects} references References
+	 * @returns Stack for MongoDB
+	 */
+	createStack(conditions, references) {
+		const stack = [
+			{
+				$match: {}
+			}
+		];
+
+		/* Filter conditions for MongoDB */
+		for (const condition in conditions) {
+			if (Object.prototype.hasOwnProperty.call(conditions, condition)) {
+				if (Array.isArray(conditions[condition])) {
+					stack[0].$match[condition] = { $in: conditions[condition].map(cond => {
+						if(String(conditions[condition]).includes('*')) {
+							return new RegExp(`^${cond.split('*').join('(.*)')}$`, 'gmi');
+						} else {
+							return cond;
+						}
+					}) };
+				} else if(String(conditions[condition]).includes('*')) {
+					stack[0].$match[condition] = { $regex: new RegExp(`^${conditions[condition].split('*').join('(.*)')}$`, 'gmi') };
+				} else {
+					stack[0].$match[condition] = conditions[condition];
+				}
+			}
+		}
+
+		/* Handle reference fields if we have any */
+		for (const reference in references) {
+			if (Object.prototype.hasOwnProperty.call(references, reference)) {
+				stack.push({
+					$lookup: references[reference]
+				});
+			}
+		}
+
+		return stack;
 	}
 };
