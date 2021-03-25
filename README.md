@@ -1,9 +1,9 @@
 # MongoDB driver for Sapling
 
-<a href="https://github.com/saplingjs/sapling/actions"><img src="https://img.shields.io/github/workflow/status/saplingjs/db-driver-mongodb/CI" alt="GitHub Workflow Status"></a>
-<a href="https://app.codecov.io/gh/saplingjs/sapling"><img src="https://img.shields.io/codecov/c/gh/saplingjs/db-driver-mongodb?token=9NU1KSRKAH" alt="Codecov"></a>
-<a href="https://www.npmjs.com/package/@sapling/sapling"><img src="https://img.shields.io/npm/v/@sapling/db-driver-mongodb.svg?sanitize=true" alt="Version"></a>
-<a href="https://github.com/saplingjs/sapling/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@sapling/db-driver-mongodb.svg?sanitize=true" alt="License"></a>
+<a href="https://github.com/saplingjs/db-driver-mongodb/actions"><img src="https://img.shields.io/github/workflow/status/saplingjs/db-driver-mongodb/CI" alt="GitHub Workflow Status"></a>
+<a href="https://app.codecov.io/gh/saplingjs/db-driver-mongodb"><img src="https://img.shields.io/codecov/c/gh/saplingjs/db-driver-mongodb?token=9NU1KSRKAH" alt="Codecov"></a>
+<a href="https://www.npmjs.com/package/@sapling/db-driver-mongodb"><img src="https://img.shields.io/npm/v/@sapling/db-driver-mongodb.svg?sanitize=true" alt="Version"></a>
+<a href="https://github.com/saplingjs/db-driver-mongodb/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@sapling/db-driver-mongodb.svg?sanitize=true" alt="License"></a>
 
 This package allows using the [MongoDB](https://www.mongodb.com/) database engine with [Sapling](https://github.com/saplingjs/sapling/).
 
