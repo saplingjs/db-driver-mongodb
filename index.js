@@ -115,23 +115,30 @@ module.exports = class Mongo extends Interface {
 	 * Create an index for the specified fields
 	 * 
 	 * @param {string} name Name of the target collection
-	 * @param {object} fields List of field names that should have indexes created. Key is the field name, value is the type of index
-	 * @param {object} config Driver specific options for the operation
+	 * @param {object} fields Object of indices to create.  Key is field name, value is index type, e.g. 'unique'
 	 */
-	async createIndex(name, fields, config) {
+	async createIndex(name, fields) {
 
-		console.log("CREATE INDEX", name, fields, config);
+		console.log("CREATE INDEX", name, fields);
 		await this.open();
 
 		/* Select the given collection */
 		const collection = await this.database.collection(name, mongo_options.collection);
 
+		const indices = [];
+
 		/* Create an index for the given field(s) */
-		const index = collection.createIndex(fields, config);
+		for (field of fields) {
+			if (fields[field] === 'unique') {
+				indices.push(collection.createIndex({ [field]: 1 }, { unique: true }));
+			} else {
+				indices.push(collection.createIndex({ [field]: 1 }));
+			}
+		}
 
 		await this.close();
 
-		return index;
+		return indices;
 	}
 
 
