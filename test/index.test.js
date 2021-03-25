@@ -99,7 +99,7 @@ test.serial('throws an error attempting to create record with non-unique value f
 	await t.throwsAsync(async () => {
 		return await t.context.mongodb.write('uniques', { email: 'john@example.com' });
 	}, {
-		message: 'E11000 duplicate key error collection: test.uniques index: email_1 dup key: { email: "john@example.com" }'
+		code: 11000
 	});
 });
 
@@ -256,7 +256,7 @@ test.serial('throws an error attempting to modify record with non-unique value f
 	await t.throwsAsync(async () => {
 		return await t.context.mongodb.modify('uniques', { email: 'john@example.com' }, { email: 'sally@example.com' });
 	}, {
-		message: 'E11000 duplicate key error collection: test.uniques index: email_1 dup key: { email: "sally@example.com" }'
+		code: 11000
 	});
 });
 
