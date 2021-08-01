@@ -4,7 +4,7 @@
 
 
 /* Dependencies */
-import { MongoClient, ObjectID } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import Interface from '@sapling/sapling/drivers/db/Interface.js';
 import { console } from '@sapling/sapling/lib/Cluster.js';
 
@@ -21,7 +21,7 @@ const mongoOptions = {
 	find: {}
 };
 
-module.exports = class Mongo extends Interface {
+export default class Mongo extends Interface {
 	/**
 	 * The MongoClient instance
 	 */
@@ -47,7 +47,7 @@ module.exports = class Mongo extends Interface {
 	convertObjectId(conditions) {
 		if (conditions._id) {
 			try {
-				conditions._id = new ObjectID(conditions._id);
+				conditions._id = new ObjectId(conditions._id);
 			} catch {}
 		}
 
@@ -215,7 +215,7 @@ module.exports = class Mongo extends Interface {
 			if (Object.prototype.hasOwnProperty.call(conditions.references, i)) {
 				const reference = conditions.references[i];
 				if (data[reference]) {
-					data[reference] = new ObjectID(data[reference]);
+					data[reference] = new ObjectId(data[reference]);
 				}
 			}
 		}
