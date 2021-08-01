@@ -4,9 +4,9 @@
 
 
 /* Dependencies */
-const { MongoClient, ObjectID } = require('mongodb');
-const Interface = require('@sapling/sapling/drivers/db/Interface');
-const { console } = require('@sapling/sapling/lib/Cluster');
+import { MongoClient, ObjectID } from 'mongodb';
+import Interface from '@sapling/sapling/drivers/db/Interface';
+import { console } from '@sapling/sapling/lib/Cluster';
 
 /* Default values */
 const HOST = 'localhost';
