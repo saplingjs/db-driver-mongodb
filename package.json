@@ -18,7 +18,7 @@
     "url": "https://www.groenroos.fi"
   },
   "dependencies": {
-    "mongodb": "^3.6.5"
+    "mongodb": "^4.0.1"
   },
   "peerDependencies": {
     "@sapling/sapling": "^0.1.0"
