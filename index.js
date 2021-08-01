@@ -5,8 +5,8 @@
 
 /* Dependencies */
 import { MongoClient, ObjectID } from 'mongodb';
-import Interface from '@sapling/sapling/drivers/db/Interface';
-import { console } from '@sapling/sapling/lib/Cluster';
+import Interface from '@sapling/sapling/drivers/db/Interface.js';
+import { console } from '@sapling/sapling/lib/Cluster.js';
 
 /* Default values */
 const HOST = 'localhost';
