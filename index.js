@@ -18,7 +18,7 @@ const mongoOptions = {
 	collection: {},
 	insert: {},
 	update: { upsert: false, multi: true },
-	find: {}
+	find: {},
 };
 
 export default class Mongo extends Interface {
@@ -64,7 +64,7 @@ export default class Mongo extends Interface {
 		/* Setup the Mongo connection */
 		this.client = new MongoClient(`mongodb://${host || HOST}:${port || PORT}`, {
 			useNewUrlParser: true,
-			useUnifiedTopology: true
+			useUnifiedTopology: true,
 		});
 
 		/* Set the given database (actually select it in open()) */
@@ -270,8 +270,8 @@ export default class Mongo extends Interface {
 	createStack(conditions, references) {
 		const stack = [
 			{
-				$match: {}
-			}
+				$match: {},
+			},
 		];
 
 		/* Filter conditions for MongoDB */
@@ -297,7 +297,7 @@ export default class Mongo extends Interface {
 		for (const reference in references) {
 			if (Object.prototype.hasOwnProperty.call(references, reference)) {
 				stack.push({
-					$lookup: references[reference]
+					$lookup: references[reference],
 				});
 			}
 		}
