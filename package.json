@@ -39,7 +39,7 @@
     "husky": "^7.0.0",
     "lint-staged": "^11.0.0",
     "nyc": "^15.1.0",
-    "xo": "^0.39.1"
+    "xo": "^0.42.0"
   },
   "xo": {
     "ignores": [
@@ -80,7 +80,8 @@
             "pascalCase": true
           }
         }
-      ]
+      ],
+      "unicorn/numeric-separators-style": "off"
     }
   },
   "ava": {
