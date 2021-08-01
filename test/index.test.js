@@ -1,8 +1,8 @@
-const test = require('ava');
+import test from 'ava';
 
-const { MongoClient } = require('mongodb');
+import { MongoClient } from 'mongodb';
 
-const MongoDB = require('../index');
+import MongoDB from '../index.js';
 
 
 test.before(async t => {
