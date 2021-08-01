@@ -60,7 +60,8 @@ test.serial('creates an index', async t => {
 test.serial('creates a new record in an existent collection', async t => {
 	const results = await t.context.mongodb.write('first', { foo: 'bar', baz: 1 });
 
-	t.is(results.result.ok, 1);
+	t.true(results.acknowledged);
+	t.is(results.insertedCount, 1);
 
 	const records = await t.context.db.collection('first').find({}).toArray();
 
@@ -72,7 +73,8 @@ test.serial('creates a new record in an existent collection', async t => {
 test.serial('creates a second new record in an existent collection', async t => {
 	const results = await t.context.mongodb.write('first', { foo: 'qux', baz: 2 });
 
-	t.is(results.result.ok, 1);
+	t.true(results.acknowledged);
+	t.is(results.insertedCount, 1);
 
 	const records = await t.context.db.collection('first').find({}).toArray();
 
@@ -84,7 +86,8 @@ test.serial('creates a second new record in an existent collection', async t => 
 test.serial('creates a new record in a non-existent collection', async t => {
 	const results = await t.context.mongodb.write('third', { foo: 'bar', baz: 1 });
 
-	t.is(results.result.ok, 1);
+	t.true(results.acknowledged);
+	t.is(results.insertedCount, 1);
 
 	const records = await t.context.db.collection('third').find({}).toArray();
 
@@ -301,8 +304,8 @@ test.serial('deletes all records', async t => {
 test.serial('deletes nothing in a non-existent collection', async t => {
 	const result = await t.context.mongodb.remove('fourth', {});
 
-	t.is(result.result.ok, 1);
-	t.is(result.result.n, 0);
+	t.true(result.acknowledged);
+	t.is(result.deletedCount, 0);
 });
 
 

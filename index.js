@@ -14,10 +14,10 @@ const PORT = 27017;
 
 /* Default options for each type of operation */
 const mongoOptions = {
-	open: { strict: false },
-	collection: { strict: false },
-	insert: { strict: false },
-	update: { upsert: false, multi: true, strict: false },
+	open: {},
+	collection: {},
+	insert: {},
+	update: { upsert: false, multi: true },
 	find: {}
 };
 
@@ -227,7 +227,7 @@ module.exports = class Mongo extends Interface {
 		const collection = await this.database.collection(name, mongoOptions.collection);
 
 		/* Update the given record with new data */
-		const result = await collection.update(conditions, { $set: data }, mongoOptions.update);
+		const result = await collection.updateMany(conditions, { $set: data }, mongoOptions.update);
 
 		await this.close();
 
@@ -252,7 +252,7 @@ module.exports = class Mongo extends Interface {
 		const collection = await this.database.collection(name, mongoOptions.collection);
 
 		/* Delete the given records */
-		const result = await collection.remove(conditions, mongoOptions.remove);
+		const result = await collection.deleteMany(conditions, mongoOptions.remove);
 
 		await this.close();
 
