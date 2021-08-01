@@ -304,4 +304,4 @@ export default class Mongo extends Interface {
 
 		return stack;
 	}
-};
+}
