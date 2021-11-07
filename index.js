@@ -25,17 +25,17 @@ export default class Mongo extends Interface {
 	/**
 	 * The MongoClient instance
 	 */
-	client = null
+	client = null;
 
 	/**
 	 * The selected database instance
 	 */
-	database = null
+	database = null;
 
 	/**
 	 * Name of the database to be selected
 	 */
-	databaseName = null
+	databaseName = null;
 
 
 	/**
