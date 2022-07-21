@@ -1,4 +1,4 @@
-name: CI
+name: Test
 
 on:
   push:
@@ -7,36 +7,15 @@ on:
     branches: [ master ]
 
 jobs:
-  lint:
-    name: Run linter
+  test-node-18:
+    name: Node.js v18
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run linter
-        run: npm run lint
-
-  test-node-16:
-    name: Test Node.js v16
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.3.0
-        with:
-          mongodb-version: '4.0'
+          node-version: '18'
 
       - name: Install dependencies
         run: npm ci
@@ -47,20 +26,31 @@ jobs:
       - name: Report coverage
         run: npm run test:send
 
-  test-node-14:
-    name: Test Node.js v14
+  test-node-16:
+    name: Node.js v16
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.3.0
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run test
+        run: npm run test
+
+  test-node-14:
+    name: Node.js v14
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          mongodb-version: '4.0'
+          node-version: '14'
 
       - name: Install dependencies
         run: npm ci
@@ -72,19 +62,14 @@ jobs:
         run: npm run test
 
   test-node-12:
-    name: Test Node.js v12
+    name: Node.js v12
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '12'
-
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.3.0
-        with:
-          mongodb-version: '4.0'
 
       - name: Install dependencies
         run: npm ci
