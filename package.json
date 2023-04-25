@@ -31,7 +31,7 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.0",
     "nyc": "^15.1.0",
-    "xo": "^0.53.0"
+    "xo": "^0.54.1"
   },
   "scripts": {
     "precommit": "lint-staged",
